@@ -13,7 +13,7 @@ Android native UI form to collect payment card information and tokenize.
 New releases of the dLocal Mobile Checkout SDK are published via [Maven Repository](https://mvnrepository.com/artifact/com.dlocal.android/mobile-checkout).  
 The latest version is available via `mavenCentral()`.
 
-Add `mavenCentral()` to the project level [build.gradle](https://bitbucket.org/dlocal-public/mobile-checkout-sdk-android/src/master/build.gradle#lines-5) file's repositories section, if you don't have it already:
+Add `mavenCentral()` to the project level [build.gradle]() file's repositories section, if you don't have it already:
 
 ```groovy
 repositories {
@@ -22,12 +22,12 @@ repositories {
 }
 ```
 
-Add dLocal Direct SDK dependency to the application's [build.gradle](https://bitbucket.org/dlocal-public/mobile-checkout-sdk-android/src/master/app/build.gradle#lines-38) file:
+Add dLocal Direct SDK dependency to the application's [build.gradle]() file:
 
 ```groovy
 dependencies {
    ... 
-   implementation 'com.dlocal.android:mobile-checkout:0.0.1'
+   implementation 'com.dlocal.android:mobile-checkout:0.0.6'
    ...
 }    
 ```
@@ -68,7 +68,7 @@ val checkout = if (BuildConfig.DEBUG) {
 
 Replacing the `apiKey` with yours for each environment.
 
-See the [SampleApplication](https://bitbucket.org/dlocal-public/mobile-checkout-sdk-android/src/master/app/src/main/java/com/dlocal/sampleapp/SampleApplication.kt) for a detailed example.
+See the [SampleApplication]() for a detailed example.
 
 
 ## DLMobileCheckout BottomSheetDialog
