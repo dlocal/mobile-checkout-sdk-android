@@ -123,6 +123,41 @@ val checkout = DLMobileCheckout
     .build()
 ```
 
+You can also customize the individual elements of the form using the DLMobileCheckout.Builder
+
+```kotlin
+textColor(lightColor: Int, darkColor: Int)
+
+titleColor(lightColor: Int, darkColor: Int)
+
+labelColor(lightColor: Int, darkColor: Int)
+
+hintColor(lightColor: Int, darkColor: Int)
+
+outlineColor(lightColor: Int, darkColor: Int)
+
+fillColor(lightColor: Int, darkColor: Int)
+
+errorColor(lightColor: Int, darkColor: Int)
+
+buttonTextColor(lightColor: Int, darkColor: Int)
+
+buttonBackgroundColor(lightColor: Int, darkColor: Int)
+
+backgroundColor(lightColor: Int, darkColor: Int)
+
+scanColor(lightColor: Int, darkColor: Int)
+
+buttonText(text: String)
+
+titleSize(fontSize: Int)
+
+scanTextSize(fontSize: Int)
+
+buttonTextSize(fontSize: Int)
+
+```
+
 ## Report Issues
 
 If you have a problem or find an issue with the SDK please contact us at [mobile-dev@dlocal.com](mailto:mobile-dev@dlocal.com).
