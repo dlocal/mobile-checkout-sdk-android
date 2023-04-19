@@ -27,7 +27,7 @@ Add dLocal Direct SDK dependency to the application's [build.gradle]() file:
 ```groovy
 dependencies {
    ... 
-   implementation 'com.dlocal.android:mobile-checkout:0.0.6'
+   implementation 'com.dlocal.android:mobile-checkout:0.0.7'
    ...
 }    
 ```
@@ -38,11 +38,13 @@ dependencies {
 
 Create an instance of DLMobileCheckout using the Builder and passing your API key and the two letter [ISO 3166](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) country code:
 ```kotlin
-import com.dlocal.mobilecheckout.DLMobileCheckout
+import com.dlocal.mobilecheckout.DLMobileCheckoutBuilder
 
-val checkout = DLMobileCheckout
-    .Builder(apiKey = "API KEY", countryCode = "COUNTRY CODE", testMode = true)
-    .build()
+val checkout = DLMobileCheckoutBuilder(
+    apiKey = "API KEY",
+    countryCode = "COUNTRY CODE",
+    testMode = true
+).build()
 ```
 > NOTE: To initialize the dLocal Mobile Checkout you will need an API Key. Please contact your Technical Account Manager to obtain one.
 
@@ -57,12 +59,12 @@ We strongly **recommend that you use the `SANDBOX` environment when testing**, a
 You can specify to use a different environment with the `testMode` param, which is false by default, i.e:
 
 ```kotlin
-import com.dlocal.mobilecheckout.DLMobileCheckout
+import com.dlocal.mobilecheckout.DLMobileCheckoutBuilder
 
 val checkout = if (BuildConfig.DEBUG) {
-    DLMobileCheckout.Builder(apiKey = "SBX API KEY", countryCode = "US", testMode = true)
+    DLMobileCheckoutBuilder(apiKey = "SBX API KEY", countryCode = "US", testMode = true)
 } else {
-    DLMobileCheckout.Builder(apiKey = "PROD API KEY", countryCode = "US", testMode = false)
+    DLMobileCheckoutBuilder(apiKey = "PROD API KEY", countryCode = "US", testMode = false)
 }.build()
 ```
 
@@ -74,28 +76,55 @@ See the [SampleApplication]() for a detailed example.
 ## DLMobileCheckout BottomSheetDialog
 
 ```kotlin
-import com.dlocal.mobilecheckout.DLMobileCheckout
+import com.dlocal.mobilecheckout.DLMobileCheckoutBuilder
 
-val checkout = DLMobileCheckout
-    .Builder(apiKey = "API KEY", countryCode = "COUNTRY CODE", testMode = true)
-    .onResultSuccess { result ->
-        println("Card token successfully generated: ${result.cardToken} to charge ${result.totalAmount}")
-        if (result.installmentsId != null) {
-            print("Payment will be processed in ${result.installments} installments, each installments with a value of ${result.installmentsAmount}")
-        } else {
-            println("Installments not allowed, payment will be processed in a single transaction for total amount")
+val checkout =
+    DLMobileCheckoutBuilder(apiKey = "API KEY", countryCode = "COUNTRY CODE", testMode = true)
+        .onResultSuccess { result ->
+            println("Card token successfully generated: ${result.cardToken} to charge ${result.totalAmount}")
+            if (result.installmentsId != null) {
+                print("Payment will be processed in ${result.installments} installments, each installments with a value of ${result.installmentsAmount}")
+            } else {
+                println("Installments not allowed, payment will be processed in a single transaction for total amount")
+            }
         }
-    }
-    .onResultError { error ->
-        println("Checkout process failed: $error")
-    }
-    .build()
+        .onResultError { error ->
+            println("Checkout process failed: $error")
+        }
+        .build()
 
-    // Open the card form bottom sheet
-    checkout.show(supportFragmentManager, DLMobileCheckout.TAG)
+// Open the card form bottom sheet
+checkout.show(supportFragmentManager, DLMobileCheckout.TAG)
 ```
 
 To present the BottomSheetDialogFragment from you activity/fragment just call `show` and pass your FragmentManager and a Tag.
+
+
+## Result Handling
+
+In order to handle the result of the operation you can make use of
+
+```kotlin
+onResultSuccess(result: (DLCheckoutResult) -> Unit):Unit
+
+onResultError(result: (String) -> Unit):Unit
+```
+
+OnResultSuccess expects a function whose argument is a DLCheckoutResult object. This DLCheckoutResult is going to contain the result data of the card tokenization.
+
+OnResultError expects a function whose argument is a string. Is used to return an error message informing the nature of the error itself.
+
+Detail of the DLCheckoutResult data class.
+
+```kotlin
+data class DLCheckoutResult(
+    val cardToken: String,
+    val totalAmount: Double,
+    val installments: Int,
+    val installmentsId: String?,
+    val installmentsAmount: Double
+)
+```
 
 ## Allow installments
 
@@ -104,10 +133,10 @@ Use `installments` function in the Builder to specify whether user will be able 
 ```kotlin
 import com.dlocal.mobilecheckout.DLMobileCheckout
 
-val checkout = DLMobileCheckout
-    .Builder(apiKey = "API KEY", countryCode = "COUNTRY CODE", testMode = true)
-    .installments(amount = 500.0, currency = "USD")
-    .build()
+val checkout =
+    DLMobileCheckoutBuilder(apiKey = "API KEY", countryCode = "COUNTRY CODE", testMode = true)
+        .installments(amount = 500.0, currency = "USD")
+        .build()
 ```
 
 ## Form Styles
@@ -117,11 +146,73 @@ You can choose one of the three predefined form styles using the Builder functio
 ```kotlin
 import com.dlocal.mobilecheckout.DLMobileCheckout
 
-val checkout = DLMobileCheckout
-    .Builder(apiKey = "API KEY", countryCode = "COUNTRY CODE", testMode = true)
-    .style(FormStyle.FILLED) // OUTLINED, FILLED, PILL
-    .build()
+val checkout =
+    DLMobileCheckoutBuilder(apiKey = "API KEY", countryCode = "COUNTRY CODE", testMode = true)
+        .style(FormStyle.FILLED) // OUTLINED, FILLED, PILL
+        .build()
 ```
+
+Style changes the look on the text fields 
+
+```kotlin
+styile(style: FormStyle)
+```
+
+OUTLINED: Utilizes the Material3 TextInputLayout OutlinedBox style in the text fields.
+
+FILLED: Utilizes the Material3 TextInputLayout FilledBox style in the text fields.
+
+PILL: Utilizes the Material3 TextInputLayout OutlinedBox style with corners rounded at 100% in the text fields.
+
+DEFAULT: Utilizes the Material3 TextInputLayout OutlinedBox style in the text fields.
+
+
+Detail of the FormStyle enum class
+
+```kotlin
+enum class FormStyle {
+    DEFAULT, OUTLINED, FILLED, PILL
+}
+```
+
+You can also customize the individual elements of the form using the DLMobileCheckout.Builder.
+
+```kotlin
+textColor(lightColor: Int, darkColor: Int)
+titleColor(lightColor: Int, darkColor: Int)
+labelColor(lightColor: Int, darkColor: Int)
+hintColor(lightColor: Int, darkColor: Int)
+outlineColor(lightColor: Int, darkColor: Int)
+fillColor(lightColor: Int, darkColor: Int)
+errorColor(lightColor: Int, darkColor: Int)
+buttonTextColor(lightColor: Int, darkColor: Int)
+buttonBackgroundColor(lightColor: Int, darkColor: Int)
+backgroundColor(lightColor: Int, darkColor: Int)
+scanColor(lightColor: Int, darkColor: Int)
+buttonText(text: String)
+titleSize(fontSize: Int)
+scanTextSize(fontSize: Int)
+buttonTextSize(fontSize: Int)
+```
+
+Colors can be passed using a resource or and hexadecimal value.
+
+Color resource
+```kotlin
+textColor(
+    lightColor = resources.getColor(R.color.textLight, null),
+    darkColor = resources.getColor(R.color.textDark, null)
+)
+```
+
+Hex Value
+```kotlin
+textColor(
+    lightColor = "#0A0A0A",
+    darkColor = "#8F8F8F"
+)
+```
+
 
 ## Report Issues
 
