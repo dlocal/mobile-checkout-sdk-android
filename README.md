@@ -25,7 +25,7 @@ Add dLocal Direct SDK dependency to the application's [build.gradle]() file:
 
 ```groovy
 dependencies {
-   implementation 'com.dlocal.android:mobile-checkout:0.1.2'
+   implementation 'com.dlocal.android:mobile-checkout:0.1.3'
 }    
 ```
 
