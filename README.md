@@ -25,7 +25,7 @@ Add dLocal Direct SDK dependency to the application's [build.gradle]() file:
 
 ```groovy
 dependencies {
-   implementation 'com.dlocal.android:mobile-checkout:0.1.4'
+   implementation 'com.dlocal.android:mobile-checkout:0.2.0'
 }    
 ```
 
@@ -33,12 +33,12 @@ dependencies {
 
 ## Initialize the SDK
 
-First call `configure` static method form DLMobileCheckout to initialize the SDK. 
+First call `initialize` static method form DLMobileCheckout to initialize the SDK. 
 
 ```kotlin
 import com.dlocal.mobilecheckout.DLMobileCheckout
 
-DLMobileCheckout.configure(apiKey = "API KEY", countryCode = "COUNTRY CODE")
+DLMobileCheckout.initialize(apiKey = "API KEY", countryCode = "COUNTRY CODE")
 ```
 > NOTE: To initialize the dLocal Mobile Checkout you will need an API Key. Please contact your Technical Account Manager to obtain one.
 
@@ -53,7 +53,7 @@ Use `testMode` parameter to specify whether you are going to be doing testing in
 Use `allowInstallments` parameter to specify whether user will be able to select installments as part of the checkout process.
 
 ```kotlin
-DLMobileCheckout.configure(
+DLMobileCheckout.initialize(
     apiKey = "API KEY", 
     countryCode = "COUNTRY CODE",
     allowInstallments = true // defaults to `false` if not specified
@@ -70,9 +70,9 @@ You can specify to use a different environment with the `testMode` param, which 
 import com.dlocal.mobilecheckout.DLMobileCheckout
 
 val checkout = if (BuildConfig.DEBUG) {
-    DLMobileCheckout.configure(apiKey = "API KEY", countryCode = "COUNTRY CODE", testMode = true)
+    DLMobileCheckout.initialize(apiKey = "API KEY", countryCode = "COUNTRY CODE", testMode = true)
 } else {
-    DLMobileCheckout.configure(apiKey = "API KEY", countryCode = "COUNTRY CODE", testMode = false)
+    DLMobileCheckout.initialize(apiKey = "API KEY", countryCode = "COUNTRY CODE", testMode = false)
 }
 ```
 
